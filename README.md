@@ -25,7 +25,14 @@ It receives definition of the approval process (steps and amount of necessary ap
     - Request body:
         ```json
         {
-            "amount": 2
+          "steps": [
+            {
+              "numberOfApprovals" : 2
+            },
+            {
+              "numberOfApprovals" : 1
+            }
+          ]
         }
         ```
     - Response body:
