@@ -1,7 +1,7 @@
 package com.malchun.approval.poc.process;
 
 import com.malchun.approval.poc.process.model.ApprovalProcessDefinition;
-import com.malchun.approval.poc.process.model.ApprovalProcessExecution;
+import com.malchun.approval.poc.process.model.ApprovalProcessProgress;
 import com.malchun.approval.poc.process.model.ApprovalRequest;
 import com.malchun.approval.poc.process.workflows.ApprovalProcessWorkflow;
 import io.temporal.client.WorkflowClient;
@@ -15,7 +15,7 @@ import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@Controller
+@RestController
 @RequestMapping("/approval-process")
 @AllArgsConstructor
 @Slf4j
@@ -24,7 +24,6 @@ public class ApprovalProcessController {
     private WorkflowClient workflowClient;
 
     @PostMapping
-    @ResponseBody
     public String start(@RequestBody ApprovalProcessDefinition definition) {
         String id = UUID.randomUUID().toString();
         ApprovalProcessWorkflow workflow = workflowClient.newWorkflowStub(ApprovalProcessWorkflow.class,
@@ -44,18 +43,16 @@ public class ApprovalProcessController {
     }
 
     @GetMapping("/{id}")
-    @ResponseBody
-    public ApprovalProcessExecution getProcessStatus(@PathVariable("id") String id) {
+    public ApprovalProcessProgress getProcessStatus(@PathVariable("id") String id) {
         log.debug("Getting process status for id: {}", id);
-        ApprovalProcessExecution state = workflowClient.newWorkflowStub(ApprovalProcessWorkflow.class, id).getState();
+        ApprovalProcessProgress state = workflowClient.newWorkflowStub(ApprovalProcessWorkflow.class, id).getState();
         return state;
     }
 
     @PutMapping("/{id}")
-    @ResponseBody
-    public ApprovalProcessExecution approve(@PathVariable("id") String id, @RequestBody ApprovalRequest request) {
+    public ApprovalProcessProgress approve(@PathVariable("id") String id, @RequestBody ApprovalRequest request) {
         log.debug("Approving request: {}", request);
-        ApprovalProcessExecution state = workflowClient.newWorkflowStub(ApprovalProcessWorkflow.class, id).approve(request.getEmail(), request.getStepId());
+        ApprovalProcessProgress state = workflowClient.newWorkflowStub(ApprovalProcessWorkflow.class, id).approve(request.getEmail(), request.getStepId());
         return state;
     }
 

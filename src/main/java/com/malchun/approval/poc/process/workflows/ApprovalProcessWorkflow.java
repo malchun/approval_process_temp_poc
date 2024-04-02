@@ -1,7 +1,7 @@
 package com.malchun.approval.poc.process.workflows;
 
 import com.malchun.approval.poc.process.model.ApprovalProcessDefinition;
-import com.malchun.approval.poc.process.model.ApprovalProcessExecution;
+import com.malchun.approval.poc.process.model.ApprovalProcessProgress;
 import io.temporal.workflow.*;
 
 @WorkflowInterface
@@ -11,10 +11,10 @@ public interface ApprovalProcessWorkflow {
     void start(ApprovalProcessDefinition definition);
 
     @UpdateMethod
-    ApprovalProcessExecution approve(String email, Integer stepId);
+    ApprovalProcessProgress approve(String email, Integer stepId);
 
     @QueryMethod
-    ApprovalProcessExecution getState();
+    ApprovalProcessProgress getState();
 
     @SignalMethod
     void exit();

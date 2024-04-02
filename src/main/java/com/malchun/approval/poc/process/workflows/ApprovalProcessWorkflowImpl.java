@@ -1,20 +1,21 @@
 package com.malchun.approval.poc.process.workflows;
 
 import com.malchun.approval.poc.process.model.ApprovalProcessDefinition;
-import com.malchun.approval.poc.process.model.ApprovalProcessExecution;
+import com.malchun.approval.poc.process.model.ApprovalProcessProgress;
 import com.malchun.approval.poc.process.activities.ApproveValidatorActivity;
 import io.temporal.activity.ActivityOptions;
 import io.temporal.spring.boot.WorkflowImpl;
 import io.temporal.workflow.Workflow;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 import java.time.Duration;
 
 @WorkflowImpl(taskQueues="ApprovalProcessQueue")
-@Slf4j
 public class ApprovalProcessWorkflowImpl implements ApprovalProcessWorkflow {
+    private Logger log = Workflow.getLogger(ApprovalProcessWorkflowImpl.class);
 
-    private ApprovalProcessExecution approvalProcessExecution;
+    private ApprovalProcessProgress approvalProcessExecution;
     private boolean exit = false;
     private ApproveValidatorActivity approveValidatorActivity =
             Workflow.newActivityStub(
@@ -24,13 +25,13 @@ public class ApprovalProcessWorkflowImpl implements ApprovalProcessWorkflow {
     @Override
     public void start(ApprovalProcessDefinition definition) {
         log.debug("Starting approval process");
-        this.approvalProcessExecution = new ApprovalProcessExecution(definition);
+        this.approvalProcessExecution = new ApprovalProcessProgress(definition);
         log.debug("Process starting");
         Workflow.await(() -> exit);
     }
 
     @Override
-    public ApprovalProcessExecution approve(String email, Integer stepId) {
+    public ApprovalProcessProgress approve(String email, Integer stepId) {
         log.debug("Approving request: {}", email);
         if (approvalProcessExecution.approved()) {
             this.exit = true;
@@ -45,7 +46,7 @@ public class ApprovalProcessWorkflowImpl implements ApprovalProcessWorkflow {
     }
 
     @Override
-    public ApprovalProcessExecution getState() {
+    public ApprovalProcessProgress getState() {
         log.debug("Returning process state: {}", approvalProcessExecution);
         return approvalProcessExecution;
     }

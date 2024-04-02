@@ -1,23 +1,21 @@
 package com.malchun.approval.poc.process.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Data
-public class ApprovalProcessExecution {
+public class ApprovalProcessProgress {
 
     LinkedHashMap<Integer, ApprovalStepProgress> stepsProgress;
     private int currentStep = 0;
     private boolean finished = false;
 
-    public ApprovalProcessExecution(ApprovalProcessDefinition processDefinition) {
+    public ApprovalProcessProgress(ApprovalProcessDefinition processDefinition) {
         this.stepsProgress = new LinkedHashMap<>();
         int size = processDefinition.getSteps().size();
         if (size == 0) {

@@ -1,30 +1,21 @@
 package com.malchun.approval.poc.process;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.malchun.approval.poc.process.model.ApprovalProcessDefinition;
-import com.malchun.approval.poc.process.model.ApprovalProcessExecution;
+import com.malchun.approval.poc.process.model.ApprovalProcessProgress;
 import com.malchun.approval.poc.process.model.ApprovalRequest;
 import com.malchun.approval.poc.process.model.ApprovalStepDefinition;
 import com.malchun.approval.poc.process.workflows.ApprovalProcessWorkflow;
-import com.malchun.approval.poc.process.workflows.ApprovalProcessWorkflowImpl;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowOptions;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -73,7 +64,7 @@ public class ApprovalProcessControllerTest {
     public void getProcessStatusTest() throws Exception {
         // Given
         var workflow = mock(ApprovalProcessWorkflow.class);
-        var approvalProcessExecution = new ApprovalProcessExecution(ApprovalProcessDefinition.builder()
+        var approvalProcessExecution = new ApprovalProcessProgress(ApprovalProcessDefinition.builder()
                 .steps(List.of(ApprovalStepDefinition.builder().numberOfApprovals(1).build())).build());
         when(workflowClient.newWorkflowStub(eq(ApprovalProcessWorkflow.class), anyString()))
                 .thenReturn(workflow);
